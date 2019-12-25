@@ -1,11 +1,3 @@
-'''
-ECDFs of beak depths
-
-While bee swarm plots are useful, we found that ECDFs are often even better when doing EDA. Plot the ECDFs for the 1975 and 2012 beak depth measurements on the same plot.
-
-For your convenience, the beak depths for the respective years has been stored in the NumPy arrays data2016 and data2015.
-
-'''
 import pandas as pd
 import numpy as np
 from ecdf import ecdf
@@ -13,6 +5,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from draw_bootstrap_replications import bootstrap_replicate_1d, draw_bs_reps
 from hypothesis_test import hypothesis_test
+
 
 def diff_of_means(data_1, data_2):
     """Difference in means of two arrays."""
@@ -24,70 +17,68 @@ def diff_of_means(data_1, data_2):
 
 
 
-df = pd.read_csv('/home/ksenia_new/my_project/alco_merge_full.csv')
-print(len(df))
-#print(df.columns)
-#df = df.dropna(subset=['PERCENTAGE_URBAN_POPULATION', 'FEMALE_LITERACY'])
-#print(len(df))
-df = df[df['Beverage Types'] == 'All types']
+df = pd.read_csv('alco_merge_full.csv')
 
-'''
-df = df[['Country', 'Data Source_x', 'Beverage Types', '2016',
-        '2015', '2013', '2012', '2011', '2010', '2009', '2008', '2007',
-       '2006', '2005', '2004', '2003', '2002', '2000']]
-'''
+print('Original size of data:', len(df))
+
 df = df[['Country', 'Data Source_x', 'Beverage Types','2015', '2016']]
-
 df = df.melt(id_vars=['Country', 'Data Source_x', 'Beverage Types'], 
         var_name="Year", 
         value_name="Value")
 
-df = df.dropna()
-data2016 = df[df['Year'] == '2016']
-data2015 = df[df['Year'] == '2015']
+types = ['All types', 'Beer', 'Wine', 'Spirits']
 
+for alco_type in types:
 
-# Compute ECDFs
-x_2016, y_2016 = ecdf(list(data2016.Value))
-x_2015, y_2015 = ecdf(list(data2015.Value))
+	print("Analysis for this type of alcohol:", alco_type)
+	print('\n')
 
-#data2016 = np.array(df[df['Year'] == '2016'])
-#data2015 = np.array(df[df['Year'] == '2015'])
+	new_df = df[df['Beverage Types'] == alco_type]
+	new_df = new_df.dropna()
+	print('Sample size: ', len(new_df))
 
+	data2016 = new_df[new_df['Year'] == '2016']
+	data2015 = new_df[new_df['Year'] == '2015']
 
-# Plot the ECDFs
-_ = plt.plot(x_2016, y_2016, marker='.', linestyle='none')
-_ = plt.plot(x_2015, y_2015, marker='.', linestyle='none')
+	# Compute ECDFs
+	x_2015, y_2015 = ecdf(list(data2015.Value))
+	x_2016, y_2016 = ecdf(list(data2016.Value))
 
-# Set margins
-plt.margins(0.02)
+	# Plot the ECDFs
+	_ = plt.plot(x_2015, y_2015, marker='.', linestyle='none')
+	_ = plt.plot(x_2016, y_2016, marker='.', linestyle='none')
 
-# Add axis labels and legend
-_ = plt.xlabel('Alcohol consumption')
-_ = plt.ylabel('ECDF')
-_ = plt.legend(('2016', '2015'), loc='lower right')
+	# Set margins
+	plt.margins(0.02)
 
-# Show the plot
-#plt.savefig('ecdf_compare2015-2016.png' , dpi=200)
-plt.show()
+	# Add axis labels and legend
+	_ = plt.xlabel('Alcohol consumption')
+	_ = plt.ylabel('ECDF')
+	_ = plt.legend(('2015','2016'), loc='lower right')
 
-# Compute the difference of the sample means: mean_diff
-mean_diff = diff_of_means(x_2016, x_2015)
+	# Show the plot
+	plt.savefig('ecdf_compare2015-2016_' + alco_type + '.png' , dpi=200)
+	plt.close()
+	#plt.show()
 
-# Get bootstrap replicates of means
-bs_replicates_2016 = draw_bs_reps(x_2016, np.mean, size=10000)
-bs_replicates_2015 = draw_bs_reps(x_2015, np.mean, size=10000)
-#print(bs_replicates_2016)
-# Compute samples of difference of means: bs_diff_replicates
-bs_diff_replicates = bs_replicates_2016 - bs_replicates_2015
+	# Compute the difference of the sample means: mean_diff
+	mean_diff = diff_of_means(x_2016, x_2015)
 
-# Compute 95% confidence interval: conf_int
-conf_int = np.percentile(bs_diff_replicates, [2.5, 97.5])
+	# Get bootstrap replicates of means
+	bs_replicates_2015 = draw_bs_reps(x_2015, np.mean, size=10000)
+	bs_replicates_2016 = draw_bs_reps(x_2016, np.mean, size=10000)
 
-# Print the results
-print('difference of means =', mean_diff)
-print('95% confidence interval =', conf_int)
-#plt.show()
+	# Compute bootstrap samples of difference of means: bs_diff_replicates
+	bs_diff_replicates = bs_replicates_2016 - bs_replicates_2015
 
-p_value = hypothesis_test(x_2016, x_2015, mean_diff)
-print(p_value)
+	# Compute 95% confidence interval: conf_int
+	conf_int = np.percentile(bs_diff_replicates, [2.5, 97.5])
+
+	# Print the results
+	print('difference of means =', mean_diff)
+	print('95% confidence interval =', conf_int)
+
+	p_value = hypothesis_test(x_2015, x_2016, mean_diff)
+
+	print('P-value', p_value)
+	print('\n')
