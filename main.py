@@ -5,48 +5,51 @@ import seaborn as sns
 from draw_bootstrap_replications import bootstrap_replicate_1d, draw_bs_reps
 from statistical_tests import hypothesis_test, ecdf, draw_bs_pairs, permutation_sample, draw_perm_reps, diff_of_means
 
+#pd.set_option('display.max_rows', df.shape[0]+1)
 
 df = pd.read_csv('alco_merge_full.csv')
 
 print('Original size of data:', len(df))
 
-df = df[['Country', 'Data Source_x', 'Beverage Types','2015', '2016']]
-df = df.melt(id_vars=['Country', 'Data Source_x', 'Beverage Types'], 
+df = df[['Country', 'Beverage Types','2015', '2016']]
+
+test_df = df
+test_df['diff'] = df['2016'] - df['2015']
+test_df = test_df[test_df['2016'] != 0.0]
+test_df = test_df[test_df['2015'] != 0.0]
+test_df['raise'] = np.where(test_df['diff'] > 0, 1, 0)
+test_df = test_df.dropna()
+
+print('Number of countries when alcohol consumption in 2016 raised:', len(test_df[test_df['raise'] == 1]))
+print('Number of countries when alcohol consumption in 2016 dropped or didn\'t change:', len(test_df[test_df['raise'] == 0]), '\n')
+
+df = df.melt(id_vars=['Country', 'Beverage Types'], 
         var_name="Year", 
         value_name="Value")
 
 df = df[df['Value'] != 0.0]
+
 types = ['All types', 'Beer', 'Wine', 'Spirits']
 
 all_types = df[df['Beverage Types'] == 'All types']
 
-#all_types = df[df['Year'] == '2016']
-
-
-#all_types = all_types.dropna(how='any', inplace=True)
-#print(all_types)
 all_types = all_types.loc[all_types.Value.notnull()]
 
-#print(all_types[all_types['Country'] == 'Austria'])
-
 country = all_types.groupby('Country').sum().reset_index()
-
 alco_leaders = country.nlargest(10, 'Value', keep='first')
-
+print('Countries leaders in alcohol consumption:', '\n', alco_leaders, '\n')
 leaders_list = list(alco_leaders['Country'])
-leaders_all = df.loc[df['Country'].isin(leaders_list)]
-leaders_all = leaders_all.groupby(['Country', 'Year']).mean().reset_index()
-leaders_all = leaders_all.sort_values(by='Value')
 
-sns.set_color_codes("pastel")
-pivot = pd.pivot_table(leaders_all,  values='Value',  columns=['Year'],  
+leaders = df.loc[df['Country'].isin(leaders_list)]
+leaders = leaders.groupby(['Country', 'Year']).mean().reset_index()
+leaders = leaders.sort_values(by='Value')
+
+#sns.set_color_codes("pastel")
+pivot = pd.pivot_table(leaders,  values='Value',  columns=['Year'],  
                          index = "Country", aggfunc=np.sum,  fill_value=0)
 pivot = pivot.reindex(pivot.sort_values(by=['2016'], ascending=False).index)
 pivot.plot(kind="bar")
-plt.show()
-
-print('Countries leaders in alcohol consumption:', alco_leaders)
-
+#plt.show()
 
 for alco_type in types:
 
@@ -62,13 +65,15 @@ for alco_type in types:
 	data2016 = new_df[new_df['Year'] == '2016']
 	
 	print('Sample mean for 2015: ', data2015['Value'].mean())
-	print('Sample median for 2015: ', data2015['Value'].median())
-	print('Minumum value for 2015: ', data2015['Value'].min())
-	print('Maximum value for 2015: ', data2015['Value'].max())
-
 	print('Sample mean for 2016: ', data2016['Value'].mean())
+
+	print('Sample median for 2015: ', data2015['Value'].median())
 	print('Sample median for 2016: ', data2016['Value'].median())
+
+	print('Minumum value for 2015: ', data2015['Value'].min())
 	print('Minumum value for 2016: ', data2016['Value'].min())
+
+	print('Maximum value for 2015: ', data2015['Value'].max())
 	print('Maximum value for 2016: ', data2016['Value'].max())
 
 	# Compute ECDFs
@@ -94,7 +99,6 @@ for alco_type in types:
 	plt.close()
 
 	print('\n', 'Hypothesis test for', alco_type, '\n')
-
 	
 	# Compute the difference of the sample means: mean_diff
 	mean_diff = diff_of_means(x_2016, x_2015)
@@ -111,7 +115,7 @@ for alco_type in types:
 
 	# Print the results
 	print('difference of means =', mean_diff)
-	print('95% confidence interval =', conf_int)
+	print('95% confidence interval for differences of means =', conf_int)
 
 	p_value = hypothesis_test(x_2015, x_2016, mean_diff)
 
