@@ -1,6 +1,7 @@
 '''
 This script processes the data, explores the data (EDA) with visualizations, 
 computes descriptive statistics of them and conducts hypothesis tests for each type of alcohol
+to compare the data of alcohol consumption in 2015 and 2016.
 
 '''
 import pandas as pd
@@ -30,17 +31,25 @@ overview = overview.melt(id_vars=['Unnamed: 0', 'Country', 'Data Source_x', 'Bev
 #delete the rows with null values
 overview = overview.loc[overview.Value.notnull()]
 
+#remove rows where alcohol consumption value is 0
+overview = overview[overview['Value'] != 0.0]
+
 #keep the rows with data for all types of alcohol
 overview = overview[overview['Beverage Types'] == 'All types']
+
+#convert year column to integer datatype
+overview.Year = overview.Year.astype('int')
+
+overview = overview[overview['Year'] > 2000]
+
+#create a new dataframe which groups data by year and calculates the number of items per each year
+countries_distribution = overview.groupby(by=['Year']).count().reset_index()
 
 #remove the outlier: this years has data only for 2 countries, while other years - for more than 200
 overview = overview[overview['Year'] != '1960']
 
 #group the data by year and calculate mean value for each year
 overview = overview.groupby(by=['Year']).mean().reset_index()
-
-#convert year column to integer datatype
-overview.Year = overview.Year.astype('int')
 
 sns.set_color_codes("pastel")
 
@@ -59,6 +68,21 @@ _ = plt.ylabel('Alcohol consumption value')
 
 #plt.savefig('overview_alcohol_consumption_all_years.png' , dpi=300)
 #plt.show()
+plt.close()
+
+
+#plot of the number of countries per each year in our data
+
+_ = plt.plot(countries_distribution["Year"], countries_distribution["Country"], color='g')
+
+plt.margins(0.02)
+
+# Add axis labels and legend
+_ = plt.xlabel('Year')
+_ = plt.ylabel('Number of countries presented')
+#plt.savefig('number_of_countries_per_year.png' , dpi=300)
+#plt.show()
+plt.close()
 
 
 '''
@@ -168,9 +192,9 @@ plt.close()
 
 types = df['Beverage Types'].unique()
 #['All types', 'Beer', 'Wine', 'Spirits']
-
+results = pd.DataFrame(columns=['beverage_types', 'mean_2015', 'mean_2016', 'std_2015', 'std_2016', 'p_bootstrap', 'p_permutation', 'significant_change'])
 #go through every type of alcohol in the data and analyse it separately
-for alco_type in types:
+for i, alco_type in enumerate(types):
 
 	print("Analysis for world consumption of this type of alcohol:", alco_type)
 	print('\n')
@@ -186,14 +210,20 @@ for alco_type in types:
 	data2016 = new_df[new_df['Year'] == '2016']
 	
 	#calculate descriptive statistics
-	print('Sample mean for 2015: ', data2015['Value'].mean())
-	print('Sample mean for 2016: ', data2016['Value'].mean())
+	mean2015 = data2015['Value'].mean()
+	mean2016 = data2016['Value'].mean()
+
+	std_2015 = data2015['Value'].std()
+	std_2016 = data2016['Value'].std()
+
+	print('Sample mean for 2015: ', mean2015)
+	print('Sample mean for 2016: ', mean2016)
 
 	print('Sample median for 2015: ', data2015['Value'].median())
 	print('Sample median for 2016: ', data2016['Value'].median())
 
-	print('Sample STD for 2015: ', data2015['Value'].std())
-	print('Sample STD for 2016: ', data2016['Value'].std())
+	print('Sample STD for 2015: ', std_2015)
+	print('Sample STD for 2016: ', std_2016)
 
 	print('Minumum value for 2015: ', data2015['Value'].min())
 	print('Minumum value for 2016: ', data2016['Value'].min())
@@ -221,7 +251,7 @@ for alco_type in types:
 
 	# Show the plot or save it to a file (ucomment what you want to do)
 
-	plt.savefig('ecdf_compare_2015-2016_' + alco_type + '.png' , dpi=200)
+	#plt.savefig('ecdf_compare_2015-2016_' + alco_type + '.png' , dpi=200)
 	#plt.show()
 	plt.close()
 
@@ -262,3 +292,20 @@ for alco_type in types:
 	# Print the result
 	print('P-value with permutation replicates:', p_value2)
 	print('\n')
+
+	if p_value <= 0.05 and p_value2 <= 0.05:
+
+		significant_change = 'raise'
+
+	elif p_value >= 0.95 and p_value2 >= 0.95:
+
+		significant_change = 'drop'
+
+	else:
+
+		significant_change = 'no'
+
+	results.loc[i] = [alco_type] + [mean2015] + [mean2016] + [std_2015] + [std_2016] + [p_value] + [p_value2] + [significant_change]
+
+results.to_csv('statistics_results.csv')
+#go through every type of alcoho
