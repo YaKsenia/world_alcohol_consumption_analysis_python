@@ -89,13 +89,16 @@ pivot = pivot.reindex(pivot.sort_values(by=['2016'], ascending=False).index)
 
 #create a visualization plot
 pivot.plot(kind="bar")
-#plt.show()
-
 plt.tight_layout()
+
+#to show the plot or save it as a ong-file,, uncomment one of the next lines:
+
 #plt.savefig('countries_leaders_2015-2016.png' , dpi=300)
+#plt.show()
 plt.close()
 
-types = ['All types', 'Beer', 'Wine', 'Spirits']
+types = df['Beverage Types'].unique()
+#['All types', 'Beer', 'Wine', 'Spirits']
 
 #go through every type of alcohol in the data and analyse it separately
 for alco_type in types:
