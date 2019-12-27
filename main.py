@@ -23,21 +23,21 @@ print('Number of rows and columns of the data:', df.shape)
 df = df[['Country', 'Beverage Types','2015', '2016']]
 
 #create a copy of the original dataframe
-compare = df.copy()
+compare_years = df.copy()
 
 #create a column with differences between 2016 and 2015 alcohol consumption value
-compare['diff'] = compare['2016'] - compare['2015']
+compare_years['diff'] = compare_years['2016'] - compare_years['2015']
 
 #keep only values which are more than 0
-compare = compare[compare['2016'] != 0.0]
-compare = compare[compare['2015'] != 0.0]
+compare_years = compare_years[compare_years['2016'] != 0.0]
+compare_years = compare_years[compare_years['2015'] != 0.0]
 
 #create a column which tells if the alcohol consumption raised (1) or didn't raise (0)
-compare['raise'] = np.where(compare['diff'] > 0, 1, 0)
-compare = compare.dropna()
+compare_years['raise'] = np.where(compare_years['diff'] > 0, 1, 0)
+compare_years = compare_years.dropna()
 
-print('Number of countries where alcohol consumption in 2016 raised:', len(compare[compare['raise'] == 1]))
-print('Number of countries where alcohol consumption in 2016 dropped or didn\'t change:', len(compare[compare['raise'] == 0]), '\n')
+print('Number of countries where alcohol consumption in 2016 raised:', len(compare_years[compare_years['raise'] == 1]))
+print('Number of countries where alcohol consumption in 2016 dropped or didn\'t change:', len(compare_years[compare_years['raise'] == 0]), '\n')
 
 #create new columns "Year" and 'Value' instead of two columns 2015 and 2016
 df = df.melt(id_vars=['Country', 'Beverage Types'], 
@@ -98,6 +98,25 @@ plt.tight_layout()
 #plt.show()
 plt.close()
 
+types_df = df[df['Beverage Types'] != 'All types']
+#create a pivot table, so beverage types becomes an index
+pivot_type = pd.pivot_table(types_df,  values='Value',  columns=['Year'],  
+                         index = "Beverage Types", aggfunc=np.sum,  fill_value=0)
+
+#sort values by 2016 alcohol value
+pivot_type = pivot_type.reindex(pivot_type.sort_values(by=['2016'], ascending=False).index)
+
+#create a visualization plot
+pivot_type.plot(kind="bar")
+plt.tight_layout()
+
+#to show the plot or save it as a ong-file,, uncomment one of the next lines:
+
+#plt.savefig('types_alcohol_compare_2015-2016.png' , dpi=200)
+#plt.show()
+plt.close()
+
+
 types = df['Beverage Types'].unique()
 #['All types', 'Beer', 'Wine', 'Spirits']
 
@@ -153,8 +172,8 @@ for alco_type in types:
 
 	# Show the plot or save it to a file (ucomment what you want to do)
 
-	#plt.savefig('ecdf_compare2015-2016_' + alco_type + '.png' , dpi=200)
-	plt.show()
+	plt.savefig('ecdf_compare_2015-2016_' + alco_type + '.png' , dpi=200)
+	#plt.show()
 	plt.close()
 
 	# Compute two hypothesis tests - based on bootstrap replicates and permutation replicates
