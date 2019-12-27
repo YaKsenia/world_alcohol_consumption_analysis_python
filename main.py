@@ -1,4 +1,5 @@
 '''
+
 This script processes the data, explores the data (EDA) with visualizations, 
 computes descriptive statistics of them and conducts hypothesis tests for each type of alcohol
 to compare the data of alcohol consumption in 2015 and 2016.
@@ -255,6 +256,20 @@ for i, alco_type in enumerate(types):
 	#plt.show()
 	plt.close()
 
+	#Swarmplot
+
+	_ = sns.swarmplot(x='Year', y='Value', data=new_df)
+
+	# Label axes
+	_ = plt.xlabel('Distribution of consumption of '+ alco_type.lower())
+	_ = plt.ylabel('Year')
+
+	# Show the plot
+	plt.savefig('swarmplot_' + alco_type + '_2015-2016.png' , dpi=200)
+
+	#plt.show()
+
+
 	# Compute two hypothesis tests - based on bootstrap replicates and permutation replicates
 	# The hypothesis is: World alcohol consumption in 2016 raised significatly comparing to 2015
 	# Null hypothesis: There was no significant change in world alcohol consumption
@@ -307,5 +322,4 @@ for i, alco_type in enumerate(types):
 
 	results.loc[i] = [alco_type] + [mean2015] + [mean2016] + [std_2015] + [std_2016] + [p_value] + [p_value2] + [significant_change]
 
-results.to_csv('statistics_results.csv')
-#go through every type of alcoho
+#results.to_csv('statistics_results.csv')
