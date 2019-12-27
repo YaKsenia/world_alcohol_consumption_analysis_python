@@ -1,6 +1,6 @@
 '''
-This script processes the data, explores the data (EDA), computes descriptive statistics of them 
-and conducts hypothesis tests for each type of alcohol
+This script processes the data, explores the data (EDA) with visualizations, 
+computes descriptive statistics of them and conducts hypothesis tests for each type of alcohol
 
 '''
 import pandas as pd
@@ -13,11 +13,12 @@ from statistical_tests import hypothesis_test, ecdf, draw_bs_pairs, permutation_
 #pd.set_option('display.max_rows', df.shape[0]+1)
 
 #read the file 
+
 df = pd.read_csv('data_world_alcohol_consumption.csv')
 
 print('Number of rows and columns of the data:', df.shape)
 
-#keep only the columns which are necessary for analysis
+#keep only the columns which are necessary for the analysis
 
 df = df[['Country', 'Beverage Types','2015', '2016']]
 
@@ -146,14 +147,14 @@ for alco_type in types:
 	plt.margins(0.02)
 
 	# Add axis labels and legend
-	_ = plt.xlabel('Alcohol consumption')
+	_ = plt.xlabel('Alcohol consumption of ' + alco_type.lower())
 	_ = plt.ylabel('ECDF')
 	_ = plt.legend(('2015','2016'), loc='lower right')
 
 	# Show the plot or save it to a file (ucomment what you want to do)
 
 	#plt.savefig('ecdf_compare2015-2016_' + alco_type + '.png' , dpi=200)
-	#plt.show()
+	plt.show()
 	plt.close()
 
 	# Compute two hypothesis tests - based on bootstrap replicates and permutation replicates
