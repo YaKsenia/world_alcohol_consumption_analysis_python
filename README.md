@@ -4,7 +4,7 @@ The project in Python for analyzing World bank data about alcohol consumption in
 
 Firstly, the project gives you an overview of the data in general (changes through all years). 
 
-Secondly, you can choose any two years in range 1980-2016, which you would like to compare with each other, see visualization of alcohol consumption in these periods in comparison next to each other and run hypothesis statistical tests to prove if these was a significant change in alcohol consumption between these two years or not.
+Secondly, you can choose any two years in range 1960-2016, which you would like to compare with each other, see visualization of alcohol consumption in these periods in comparison next to each other and run hypothesis statistical tests to prove if these was a significant change in alcohol consumption between these two years or not.
 
 Before running the project, you have to install the necessary software typing this command in your Terminal/command line:
 
@@ -24,7 +24,7 @@ python3.6 overview.py
 
 ![alt text](https://github.com/YaKsenia/world_alcohol_consumption_analysis_python/blob/master/visualizations/overview_alcohol_consumption_all_years.png)
 
-3. It visualizes the number of countries presented in the data for each year (so we can see how many missing data are there in some years, sometimes it can be twice less than in others):
+3. The amount of data for each year is not equal and, even though we calculate mean values for every year, it can make the results biased. That's why this script also visualizes the number of countries presented in the data for each year (so we can see how many missing data are there in some years, sometimes it can be twice less than in others):
 
 ![alt text](https://github.com/YaKsenia/world_alcohol_consumption_analysis_python/blob/master/visualizations/number_of_countries_per_year.png)
 
@@ -82,4 +82,4 @@ At the end the script generates a table with descriptive statistics for each yea
 
 
 
-You can also see the resulting csv-file in the folder **results** of this Git repository.
+You can also see the example of a resulting csv-file in the folder **results** of this Git repository. When you run the project locally, the file with your results will be saved in the main project folder.
