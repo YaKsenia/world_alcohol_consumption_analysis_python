@@ -47,3 +47,7 @@ Now, you can choose any pair/pairs of years between which you see a significant 
 2. It visualizes data for 10 top-coutries in alcohol consumption in comparison for the two years of observation:
 
 ![alt text](https://github.com/YaKsenia/world_alcohol_consumption_analysis_python/blob/master/visualizations/countries_leaders_2015-2016.png)
+
+3. It visualizes data per each type of alcohol in comparison between the years of observation:
+
+![alt text](https://github.com/YaKsenia/world_alcohol_consumption_analysis_python/blob/master/visualizations/types_alcohol_compare_2015-2016.png)
