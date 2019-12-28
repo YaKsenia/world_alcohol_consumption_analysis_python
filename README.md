@@ -24,7 +24,7 @@ python3.6 overview.py
 
 ![alt text](https://github.com/YaKsenia/world_alcohol_consumption_analysis_python/blob/master/visualizations/overview_alcohol_consumption_all_years.png)
 
-3. It visualizes the number of countries presented in the data for each year (so we can see how many missing data are there in some years, sometimes it can be twice less than in others):
+3. The amount of data for each year is not equal and, even though we calculate mean values for every year, it can make the results biased. That's why this script also visualizes the number of countries presented in the data for each year (so we can see how many missing data are there in some years, sometimes it can be twice less than in others):
 
 ![alt text](https://github.com/YaKsenia/world_alcohol_consumption_analysis_python/blob/master/visualizations/number_of_countries_per_year.png)
 
