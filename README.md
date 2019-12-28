@@ -64,3 +64,14 @@ Now, you can choose any pair/pairs of years between which you see a significant 
 5. It creates swarmplots for each type of alcohol for two years in comparison and plots them on one figure:
 
 ![alt text](https://github.com/YaKsenia/world_alcohol_consumption_analysis_python/blob/master/visualizations/all_swarmplots_2015-2016.png)
+
+
+6. It generates bootstrap replicates and permutation replicates based on the means of the data and conducts hypothesis tests with them.
+
+- The hypothesis is: World alcohol consumption in the second year raised/dropped significatly comparing to the first
+- Null hypothesis: There was no significant change in world alcohol consumption
+
+At the end the script generates a table with descriptive statistics for each year and hypothesis test results for each type of alcohol: at the last column you can see if there was no significant change (no), positive significant change (raise) or negative significant change (drop):
+
+![alt text](https://github.com/YaKsenia/world_alcohol_consumption_analysis_python/blob/master/visualizations/all_swarmplots_2015-2016.png)
+
