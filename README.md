@@ -71,7 +71,15 @@ Now, you can choose any pair/pairs of years between which you see a significant 
 - The hypothesis is: World alcohol consumption in the second year raised/dropped significatly comparing to the first
 - Null hypothesis: There was no significant change in world alcohol consumption
 
+
+
 At the end the script generates a table with descriptive statistics for each year and hypothesis test results for each type of alcohol: at the last column you can see if there was no significant change (no), positive significant change (raise) or negative significant change (drop):
 
-![alt text](https://github.com/YaKsenia/world_alcohol_consumption_analysis_python/blob/master/visualizations/all_swarmplots_2015-2016.png)
 
+
+![alt text](https://github.com/YaKsenia/world_alcohol_consumption_analysis_python/blob/master/visualizations/output2.png)
+
+
+
+
+You can also see the resulting csv-file in the folder **results** of this Git repository.
