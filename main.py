@@ -1,4 +1,6 @@
 '''
+Analysis with comparison of alcohol consumption between two years
+
 
 This script processes the data, explores the data (EDA) with visualizations, 
 computes descriptive statistics of them and conducts hypothesis tests for each type of alcohol
@@ -11,100 +13,24 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from draw_bootstrap_replications import bootstrap_replicate_1d, draw_bs_reps
 from statistical_tests import hypothesis_test, ecdf, draw_bs_pairs, permutation_sample, draw_perm_reps, diff_of_means
-
+from config import begin_year, end_year
 #read the file 
 
 df = pd.read_csv('data_world_alcohol_consumption.csv')
-#pd.set_option('display.max_rows', df.shape[0]+1)
-print('Number of rows and columns of the data:', df.shape)
-
-
-#Exploratory data analysis
-
-overview = df.copy()
-
-#create new columns "Year" and 'Value' instead of all the columns with years
-
-overview = overview.melt(id_vars=['Unnamed: 0', 'Country', 'Data Source_x', 'Beverage Types'], 
-        var_name="Year", 
-        value_name="Value")
-
-#delete the rows with null values
-overview = overview.loc[overview.Value.notnull()]
-
-#remove rows where alcohol consumption value is 0
-overview = overview[overview['Value'] != 0.0]
-
-#keep the rows with data for all types of alcohol
-overview = overview[overview['Beverage Types'] == 'All types']
-
-#convert year column to integer datatype
-overview.Year = overview.Year.astype('int')
-
-overview = overview[overview['Year'] > 2000]
-
-#create a new dataframe which groups data by year and calculates the number of items per each year
-countries_distribution = overview.groupby(by=['Year']).count().reset_index()
-
-#remove the outlier: this years has data only for 2 countries, while other years - for more than 200
-overview = overview[overview['Year'] != '1960']
-
-#group the data by year and calculate mean value for each year
-overview = overview.groupby(by=['Year']).mean().reset_index()
-
-sns.set_color_codes("pastel")
-
-#visualize changes of alcohol consumption means for every year
-
-_ = plt.plot(overview["Year"], overview["Value"], color='r')
-
-plt.margins(0.02)
-
-# Add axis labels and legend
-_ = plt.xlabel('Year')
-_ = plt.ylabel('Alcohol consumption value')
-
-
-#save the graph as png image or show (uncomment the option which you prefer)
-
-#plt.savefig('overview_alcohol_consumption_all_years.png' , dpi=300)
-#plt.show()
-plt.close()
-
-
-#plot of the number of countries per each year in our data
-
-_ = plt.plot(countries_distribution["Year"], countries_distribution["Country"], color='g')
-
-plt.margins(0.02)
-
-# Add axis labels and legend
-_ = plt.xlabel('Year')
-_ = plt.ylabel('Number of countries presented')
-#plt.savefig('number_of_countries_per_year.png' , dpi=300)
-#plt.show()
-plt.close()
-
-
-'''
-
-Analysis with comparison of alcohol consumption between two years: 2015 and 2016
-
-'''
 
 #keep only the columns which are necessary for the analysis
 
-df = df[['Country', 'Beverage Types','2015', '2016']]
+df = df[['Country', 'Beverage Types', begin_year, end_year]]
 
 #create a copy of the original dataframe
 compare_years = df.copy()
 
 #create a column with differences between 2016 and 2015 alcohol consumption value
-compare_years['diff'] = compare_years['2016'] - compare_years['2015']
+compare_years['diff'] = compare_years[end_year] - compare_years[begin_year]
 
 #keep only values which are more than 0
-compare_years = compare_years[compare_years['2016'] != 0.0]
-compare_years = compare_years[compare_years['2015'] != 0.0]
+compare_years = compare_years[compare_years[end_year] != 0.0]
+compare_years = compare_years[compare_years[begin_year] != 0.0]
 
 #create a column which tells if the alcohol consumption raised (1) or didn't raise (0)
 compare_years['raise'] = np.where(compare_years['diff'] > 0, 1, 0)
@@ -136,17 +62,14 @@ all_types = all_types.loc[all_types.Value.notnull()]
 country = all_types.groupby('Country').sum().reset_index()
 
 #choose 10 countries where the sum of alcohol consumption for 2015-2016 was the highest
-
 alco_leaders = country.nlargest(10, 'Value', keep='first')
 
 print('Countries leaders in alcohol consumption:', '\n', alco_leaders, '\n')
 
 #create a list of 10 most 'alcoholic' countries'names
-
 leaders_list = list(alco_leaders['Country'])
 
 #use this list to choose from the main df only the rows with these countries
-
 leaders = df.loc[df['Country'].isin(leaders_list)]
 
 #group by country name and year (so we get every country's alcohol value twice - for 2015 and 2016
@@ -160,16 +83,16 @@ pivot = pd.pivot_table(leaders,  values='Value',  columns=['Year'],
                          index = "Country", aggfunc=np.sum,  fill_value=0)
 
 #sort values by 2016 alcohol value
-pivot = pivot.reindex(pivot.sort_values(by=['2016'], ascending=False).index)
+pivot = pivot.reindex(pivot.sort_values(by=[end_year], ascending=False).index)
 
 #create a visualization plot
 pivot.plot(kind="bar")
 plt.tight_layout()
 
-#to show the plot or save it as a ong-file,, uncomment one of the next lines:
+#to show the plot or save it as a png-file,, uncomment one of the next lines:
 
 #plt.savefig('countries_leaders_2015-2016.png' , dpi=300)
-#plt.show()
+plt.show()
 plt.close()
 
 types_df = df[df['Beverage Types'] != 'All types']
@@ -178,7 +101,7 @@ pivot_type = pd.pivot_table(types_df,  values='Value',  columns=['Year'],
                          index = "Beverage Types", aggfunc=np.sum,  fill_value=0)
 
 #sort values by 2016 alcohol value
-pivot_type = pivot_type.reindex(pivot_type.sort_values(by=['2016'], ascending=False).index)
+pivot_type = pivot_type.reindex(pivot_type.sort_values(by=[end_year], ascending=False).index)
 
 #create a visualization plot
 pivot_type.plot(kind="bar")
@@ -187,16 +110,22 @@ plt.tight_layout()
 #to show the plot or save it as a ong-file,, uncomment one of the next lines:
 
 #plt.savefig('types_alcohol_compare_2015-2016.png' , dpi=200)
-#plt.show()
+plt.show()
 plt.close()
 
-
+df = df[df['Beverage Types'] != 'All types']
 types = df['Beverage Types'].unique()
 #['All types', 'Beer', 'Wine', 'Spirits']
 results = pd.DataFrame(columns=['beverage_types', 'mean_2015', 'mean_2016', 'std_2015', 'std_2016', 'p_bootstrap', 'p_permutation', 'significant_change'])
 #go through every type of alcohol in the data and analyse it separately
+
+fig1 = plt.figure(figsize=(16, 8))
+fig2 = plt.figure(figsize=(16, 8))
+columns = 4
+rows = 1
 for i, alco_type in enumerate(types):
 
+	i = i + 1
 	print("Analysis for world consumption of this type of alcohol:", alco_type)
 	print('\n')
 
@@ -207,8 +136,8 @@ for i, alco_type in enumerate(types):
 	print('Sample size: ', len(new_df))
 
 	#make two different dataframes for 2015 and 2016
-	data2015 = new_df[new_df['Year'] == '2015']
-	data2016 = new_df[new_df['Year'] == '2016']
+	data2015 = new_df[new_df['Year'] == begin_year]
+	data2016 = new_df[new_df['Year'] == end_year]
 	
 	#calculate descriptive statistics
 	mean2015 = data2015['Value'].mean()
@@ -239,35 +168,39 @@ for i, alco_type in enumerate(types):
 
 	# Plot the ECDFs
 
-	_ = plt.plot(x_2015, y_2015, marker='.', linestyle='none')
-	_ = plt.plot(x_2016, y_2016, marker='.', linestyle='none')
+
+	axis1 = fig1.add_subplot(rows, columns, i)
+	axis1.set_title('ECDF of ' + alco_type.lower() + ' consumption')
+
+
+
+	axis1.plot(x_2015, y_2015, marker='.', linestyle='none')
+	axis1.plot(x_2016, y_2016, marker='.', linestyle='none')
 
 	# Set margins
-	plt.margins(0.02)
+	#plt.margins(0.02)
 
 	# Add axis labels and legend
-	_ = plt.xlabel('Alcohol consumption of ' + alco_type.lower())
-	_ = plt.ylabel('ECDF')
-	_ = plt.legend(('2015','2016'), loc='lower right')
-
-	# Show the plot or save it to a file (ucomment what you want to do)
-
-	#plt.savefig('ecdf_compare_2015-2016_' + alco_type + '.png' , dpi=200)
-	#plt.show()
-	plt.close()
+	axis1.set_xlabel('Alcohol consumption value')
+	axis1.set_ylabel('ECDF')
+	#axis1.set_legend((begin_year,end_year), loc='lower right')
 
 	#Swarmplot
 
-	_ = sns.swarmplot(x='Year', y='Value', data=new_df)
 
 	# Label axes
-	_ = plt.xlabel('Distribution of consumption of '+ alco_type.lower())
-	_ = plt.ylabel('Year')
 
-	# Show the plot
-	plt.savefig('swarmplot_' + alco_type + '_2015-2016.png' , dpi=200)
+	#fig2.add_subplot(rows, columns, i)
 
-	#plt.show()
+	axis2 = fig2.add_subplot(rows, columns, i)
+	axis2 = sns.swarmplot(x='Year', y='Value', data=new_df)
+	axis2.set_title('Consumption of ' + alco_type.lower())
+
+	'''
+	sns.swarmplot(x='Year', y='Value', data=new_df)
+	plt.xlabel('Distribution of consumption of '+ alco_type.lower())
+	plt.ylabel('Year')
+	'''
 
 
 	# Compute two hypothesis tests - based on bootstrap replicates and permutation replicates
@@ -321,5 +254,12 @@ for i, alco_type in enumerate(types):
 		significant_change = 'no'
 
 	results.loc[i] = [alco_type] + [mean2015] + [mean2016] + [std_2015] + [std_2016] + [p_value] + [p_value2] + [significant_change]
+
+# save the figures with plots or just show them (uncomment your preference)
+
+#fig1.savefig('ecdfs_2015-2016.png' , dpi=200)
+#fig2.savefig('swarmplots_2015-2016.png' , dpi=200)
+
+plt.show()
 
 #results.to_csv('statistics_results.csv')
