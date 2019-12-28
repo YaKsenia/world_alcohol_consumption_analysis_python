@@ -4,7 +4,7 @@ Analysis with comparison of alcohol consumption between two years
 
 This script processes the data, explores the data (EDA) with visualizations, 
 computes descriptive statistics of them and conducts hypothesis tests for each type of alcohol
-to compare the data of alcohol consumption in 2015 and 2016.
+to compare the data of alcohol consumption in _begin_year and _end_year.
 
 '''
 import pandas as pd
@@ -13,10 +13,10 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from draw_bootstrap_replications import bootstrap_replicate_1d, draw_bs_reps
 from statistical_tests import hypothesis_test, ecdf, draw_bs_pairs, permutation_sample, draw_perm_reps, diff_of_means
-from config import begin_year, end_year
+from config import begin_year, end_year, filename
 #read the file 
 
-df = pd.read_csv('data_world_alcohol_consumption.csv')
+df = pd.read_csv(filename)
 
 #keep only the columns which are necessary for the analysis
 
@@ -25,7 +25,7 @@ df = df[['Country', 'Beverage Types', begin_year, end_year]]
 #create a copy of the original dataframe
 compare_years = df.copy()
 
-#create a column with differences between 2016 and 2015 alcohol consumption value
+#create a column with differences between _end_year and _begin_year alcohol consumption value
 compare_years['diff'] = compare_years[end_year] - compare_years[begin_year]
 
 #keep only values which are more than 0
@@ -36,10 +36,10 @@ compare_years = compare_years[compare_years[begin_year] != 0.0]
 compare_years['raise'] = np.where(compare_years['diff'] > 0, 1, 0)
 compare_years = compare_years.dropna()
 
-print('Number of countries where alcohol consumption in 2016 raised:', len(compare_years[compare_years['raise'] == 1]))
-print('Number of countries where alcohol consumption in 2016 dropped or didn\'t change:', len(compare_years[compare_years['raise'] == 0]), '\n')
+print('Number of countries where alcohol consumption in _end_year raised:', len(compare_years[compare_years['raise'] == 1]))
+print('Number of countries where alcohol consumption in _end_year dropped or didn\'t change:', len(compare_years[compare_years['raise'] == 0]), '\n')
 
-#create new columns "Year" and 'Value' instead of two columns 2015 and 2016
+#create new columns "Year" and 'Value' instead of two columns _begin_year and _end_year
 df = df.melt(id_vars=['Country', 'Beverage Types'], 
         var_name="Year", 
         value_name="Value")
@@ -61,7 +61,7 @@ all_types = all_types.loc[all_types.Value.notnull()]
 
 country = all_types.groupby('Country').sum().reset_index()
 
-#choose 10 countries where the sum of alcohol consumption for 2015-2016 was the highest
+#choose 10 countries where the sum of alcohol consumption for _begin_year-_end_year was the highest
 alco_leaders = country.nlargest(10, 'Value', keep='first')
 
 print('Countries leaders in alcohol consumption:', '\n', alco_leaders, '\n')
@@ -72,7 +72,7 @@ leaders_list = list(alco_leaders['Country'])
 #use this list to choose from the main df only the rows with these countries
 leaders = df.loc[df['Country'].isin(leaders_list)]
 
-#group by country name and year (so we get every country's alcohol value twice - for 2015 and 2016
+#group by country name and year (so we get every country's alcohol value twice - for _begin_year and _end_year
 leaders = leaders.groupby(['Country', 'Year']).mean().reset_index()
 #leaders = leaders.sort_values(by='Value')
 
@@ -82,7 +82,7 @@ leaders = leaders.groupby(['Country', 'Year']).mean().reset_index()
 pivot = pd.pivot_table(leaders,  values='Value',  columns=['Year'],  
                          index = "Country", aggfunc=np.sum,  fill_value=0)
 
-#sort values by 2016 alcohol value
+#sort values by _end_year alcohol value
 pivot = pivot.reindex(pivot.sort_values(by=[end_year], ascending=False).index)
 
 #create a visualization plot
@@ -91,7 +91,7 @@ plt.tight_layout()
 
 #to show the plot or save it as a png-file,, uncomment one of the next lines:
 
-#plt.savefig('countries_leaders_2015-2016.png' , dpi=300)
+#plt.savefig('countries_leaders_begin_year-_end_year.png' , dpi=300)
 plt.show()
 plt.close()
 
@@ -100,7 +100,7 @@ types_df = df[df['Beverage Types'] != 'All types']
 pivot_type = pd.pivot_table(types_df,  values='Value',  columns=['Year'],  
                          index = "Beverage Types", aggfunc=np.sum,  fill_value=0)
 
-#sort values by 2016 alcohol value
+#sort values by _end_year alcohol value
 pivot_type = pivot_type.reindex(pivot_type.sort_values(by=[end_year], ascending=False).index)
 
 #create a visualization plot
@@ -109,14 +109,14 @@ plt.tight_layout()
 
 #to show the plot or save it as a ong-file,, uncomment one of the next lines:
 
-#plt.savefig('types_alcohol_compare_2015-2016.png' , dpi=200)
+#plt.savefig('types_alcohol_compare_begin_year-_end_year.png' , dpi=200)
 plt.show()
 plt.close()
 
 df = df[df['Beverage Types'] != 'All types']
 types = df['Beverage Types'].unique()
 #['All types', 'Beer', 'Wine', 'Spirits']
-results = pd.DataFrame(columns=['beverage_types', 'mean_2015', 'mean_2016', 'std_2015', 'std_2016', 'p_bootstrap', 'p_permutation', 'significant_change'])
+results = pd.DataFrame(columns=['beverage_types', 'mean_begin_year', 'mean_end_year', 'std_begin_year', 'std_end_year', 'p_bootstrap', 'p_permutation', 'significant_change'])
 #go through every type of alcohol in the data and analyse it separately
 
 fig1 = plt.figure(figsize=(16, 8))
@@ -135,36 +135,36 @@ for i, alco_type in enumerate(types):
 
 	print('Sample size: ', len(new_df))
 
-	#make two different dataframes for 2015 and 2016
-	data2015 = new_df[new_df['Year'] == begin_year]
-	data2016 = new_df[new_df['Year'] == end_year]
+	#make two different dataframes for _begin_year and _end_year
+	data_begin_year = new_df[new_df['Year'] == begin_year]
+	data_end_year = new_df[new_df['Year'] == end_year]
 	
 	#calculate descriptive statistics
-	mean2015 = data2015['Value'].mean()
-	mean2016 = data2016['Value'].mean()
+	mean_begin_year = data_begin_year['Value'].mean()
+	mean_end_year = data_end_year['Value'].mean()
 
-	std_2015 = data2015['Value'].std()
-	std_2016 = data2016['Value'].std()
+	std_begin_year = data_begin_year['Value'].std()
+	std_end_year = data_end_year['Value'].std()
 
-	print('Sample mean for 2015: ', mean2015)
-	print('Sample mean for 2016: ', mean2016)
+	print('Sample mean for ' + begin_year + ': ', mean_begin_year)
+	print('Sample mean for ' + end_year + ': ', mean_end_year)
 
-	print('Sample median for 2015: ', data2015['Value'].median())
-	print('Sample median for 2016: ', data2016['Value'].median())
+	print('Sample median for ' + begin_year + ': ', data_begin_year['Value'].median())
+	print('Sample median for ' + end_year + ': ', data_end_year['Value'].median())
 
-	print('Sample STD for 2015: ', std_2015)
-	print('Sample STD for 2016: ', std_2016)
+	print('Sample STD for ' + begin_year + ': ', std_begin_year)
+	print('Sample STD for ' + end_year + ': ', std_end_year)
 
-	print('Minumum value for 2015: ', data2015['Value'].min())
-	print('Minumum value for 2016: ', data2016['Value'].min())
+	print('Minumum value for ' + begin_year + ': ', data_begin_year['Value'].min())
+	print('Minumum value for ' + end_year + ': ', data_end_year['Value'].min())
 
-	print('Maximum value for 2015: ', data2015['Value'].max())
-	print('Maximum value for 2016: ', data2016['Value'].max())
+	print('Maximum value for ' + begin_year + ': ', data_begin_year['Value'].max())
+	print('Maximum value for ' + end_year + ': ', data_end_year['Value'].max())
 
-	# Compute ECDFs for 2015 and 2016
+	# Compute ECDFs for _begin_year and _end_year
 
-	x_2015, y_2015 = ecdf(list(data2015.Value))
-	x_2016, y_2016 = ecdf(list(data2016.Value))
+	x_begin_year, y_begin_year = ecdf(list(data_begin_year.Value))
+	x_end_year, y_end_year = ecdf(list(data_end_year.Value))
 
 	# Plot the ECDFs
 
@@ -174,8 +174,8 @@ for i, alco_type in enumerate(types):
 
 
 
-	axis1.plot(x_2015, y_2015, marker='.', linestyle='none')
-	axis1.plot(x_2016, y_2016, marker='.', linestyle='none')
+	axis1.plot(x_begin_year, y_begin_year, marker='.', linestyle='none')
+	axis1.plot(x_end_year, y_end_year, marker='.', linestyle='none')
 
 	# Set margins
 	#plt.margins(0.02)
@@ -204,20 +204,20 @@ for i, alco_type in enumerate(types):
 
 
 	# Compute two hypothesis tests - based on bootstrap replicates and permutation replicates
-	# The hypothesis is: World alcohol consumption in 2016 raised significatly comparing to 2015
+	# The hypothesis is: World alcohol consumption in _end_year raised significatly comparing to _begin_year
 	# Null hypothesis: There was no significant change in world alcohol consumption
 
 	print('\n', 'Hypothesis test for', alco_type, '\n')
 	
 	# Compute the difference of the sample means: mean_diff
-	mean_diff = diff_of_means(x_2016, x_2015)
+	mean_diff = diff_of_means(x_end_year, x_begin_year)
 
 	# Get bootstrap replicates of means
-	bs_replicates_2015 = draw_bs_reps(x_2015, np.mean, size=10000)
-	bs_replicates_2016 = draw_bs_reps(x_2016, np.mean, size=10000)
+	bs_replicates_begin_year = draw_bs_reps(x_begin_year, np.mean, size=10000)
+	bs_replicates_end_year = draw_bs_reps(x_end_year, np.mean, size=10000)
 
 	# Compute bootstrap samples of difference of means: bs_diff_replicates
-	bs_diff_replicates = bs_replicates_2016 - bs_replicates_2015
+	bs_diff_replicates = bs_replicates_end_year - bs_replicates_begin_year
 
 	# Compute 95% confidence interval: conf_int
 	conf_int = np.percentile(bs_diff_replicates, [2.5, 97.5])
@@ -225,14 +225,14 @@ for i, alco_type in enumerate(types):
 	print('difference of means =', mean_diff)
 	print('95% confidence interval for differences of means =', conf_int)
 
-	p_value = hypothesis_test(x_2015, x_2016, mean_diff)
+	p_value = hypothesis_test(x_begin_year, x_end_year, mean_diff)
 
 	print('P-value with bootstrap replicates: ', p_value)
 
-	mean_diff_permutation = diff_of_means(x_2015, x_2016)
+	mean_diff_permutation = diff_of_means(x_begin_year, x_end_year)
 
 	# Draw 10,000 permutation replicates: perm_replicates
-	perm_replicates = draw_perm_reps(x_2015, x_2016, diff_of_means, size=10000)
+	perm_replicates = draw_perm_reps(x_begin_year, x_end_year, diff_of_means, size=10000)
 
 	# Compute p-value: p
 	p_value2 = np.sum(perm_replicates <= mean_diff_permutation) / len(perm_replicates)
@@ -253,12 +253,12 @@ for i, alco_type in enumerate(types):
 
 		significant_change = 'no'
 
-	results.loc[i] = [alco_type] + [mean2015] + [mean2016] + [std_2015] + [std_2016] + [p_value] + [p_value2] + [significant_change]
+	results.loc[i] = [alco_type] + [mean_begin_year] + [mean_end_year] + [std_begin_year] + [std_end_year] + [p_value] + [p_value2] + [significant_change]
 
 # save the figures with plots or just show them (uncomment your preference)
 
-#fig1.savefig('ecdfs_2015-2016.png' , dpi=200)
-#fig2.savefig('swarmplots_2015-2016.png' , dpi=200)
+#fig1.savefig('ecdfs_begin_year-_end_year.png' , dpi=200)
+#fig2.savefig('swarmplots_begin_year-_end_year.png' , dpi=200)
 
 plt.show()
 
