@@ -82,4 +82,4 @@ At the end the script generates a table with descriptive statistics for each yea
 
 
 
-You can also see the resulting csv-file in the folder **results** of this Git repository.
+You can also see the example of a resulting csv-file in the folder **results** of this Git repository. When you run the project locally, the file with your results will be saved in the main project folder.
