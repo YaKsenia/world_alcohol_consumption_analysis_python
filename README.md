@@ -40,14 +40,27 @@ Now, you can choose any pair/pairs of years between which you see a significant 
   
 **What happens when you run main.py?**
 
+
 1. It calculates number of countries where alcohol consumption raised/ dropped/ didn't change in the chosen two years:
 
 ![alt text](https://github.com/YaKsenia/world_alcohol_consumption_analysis_python/blob/master/visualizations/output1.png)
+
 
 2. It visualizes data for 10 top-coutries in alcohol consumption in comparison for the two years of observation:
 
 ![alt text](https://github.com/YaKsenia/world_alcohol_consumption_analysis_python/blob/master/visualizations/countries_leaders_2015-2016.png)
 
+
 3. It visualizes data per each type of alcohol in comparison between the years of observation:
 
 ![alt text](https://github.com/YaKsenia/world_alcohol_consumption_analysis_python/blob/master/visualizations/types_alcohol_compare_2015-2016.png)
+
+
+4. It created ECDFs (Empirical cumulative distribution function) for each type of alcohol for two years in comparison and plots them on one figure:
+
+![alt text](https://github.com/YaKsenia/world_alcohol_consumption_analysis_python/blob/master/visualizations/all_ecdfs_2015-2016.png)
+
+
+5. It creates swarmplots for each type of alcohol for two years in comparison and plots them on one figure:
+
+![alt text](https://github.com/YaKsenia/world_alcohol_consumption_analysis_python/blob/master/visualizations/all_swarmplots_2015-2016.png)
