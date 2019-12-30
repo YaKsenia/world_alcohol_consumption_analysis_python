@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from draw_bootstrap_replications import draw_bs_reps
 from statistical_tests import hypothesis_test, ecdf, draw_perm_reps, diff_of_means
-from config import begin_year, end_year, filename
+from config import filename
 import argparse
 
 # Define the parser
@@ -41,6 +41,7 @@ compare_years = df.copy()
 
 #create a column with differences between _end_year and _begin_year alcohol consumption value
 compare_years['diff'] = compare_years[end_year] - compare_years[begin_year]
+compare_years = compare_years[compare_years['Beverage Types'] == 'All types']
 
 #keep only values which are more than 0
 compare_years = compare_years[compare_years[end_year] != 0.0]
@@ -65,15 +66,12 @@ df = df.melt(id_vars=['Country', 'Beverage Types'],
 df = df[df['Value'] != 0.0]
 
 #create a dataframe where the type of alcohol is only "All types"
-
 all_types = df[df['Beverage Types'] == 'All types']
 
 #delete rows with null values
-
 all_types = all_types.loc[all_types.Value.notnull()]
 
 #group the dataframe by Country and calculate sum of values for each country
-
 country = all_types.groupby('Country').sum().reset_index()
 
 #choose 10 countries where the sum of alcohol consumption for _begin_year-_end_year was the highest
@@ -87,10 +85,9 @@ leaders_list = list(alco_leaders['Country'])
 #use this list to choose from the main df only the rows with these countries
 leaders = df.loc[df['Country'].isin(leaders_list)]
 
-#group by country name and year (so we get every country's alcohol value twice
-# - for _begin_year and _end_year
-leaders = leaders.groupby(['Country', 'Year']).mean().reset_index()
-#leaders = leaders.sort_values(by='Value')
+leaders = leaders[leaders['Beverage Types'] == 'All types']
+
+leaders = leaders.loc[leaders.Value.notnull()]
 
 #sns.set_color_codes("pastel")
 
@@ -105,7 +102,7 @@ pivot = pivot.reindex(pivot.sort_values(by=[end_year], ascending=False).index)
 pivot.plot(kind="bar")
 plt.tight_layout()
 
-#to show the plot or save it as a png-file,, uncomment one of the next lines:
+#to show the plot or save it as a png-file, uncomment one of the next lines:
 
 #plt.savefig('countries_leaders_begin_year-_end_year.png' , dpi=300)
 plt.show()
