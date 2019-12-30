@@ -1,5 +1,4 @@
 import pandas as pd
-import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 
@@ -8,16 +7,15 @@ df = pd.read_csv('data_world_alcohol_consumption.csv')
 #pd.set_option('display.max_rows', df.shape[0]+1)
 print('Number of rows and columns of the original data:', df.shape)
 
-
 #Exploratory data analysis
 
 overview = df.copy()
 
 #create new columns "Year" and 'Value' instead of all the columns with years
 
-overview = overview.melt(id_vars=['Unnamed: 0', 'Country', 'Data Source_x', 'Beverage Types'], 
-        var_name="Year", 
-        value_name="Value")
+overview = overview.melt(id_vars=['Unnamed: 0', 'Country', 'Data Source_x', 'Beverage Types'],
+                         var_name="Year",
+                         value_name="Value")
 
 #delete the rows with null values
 overview = overview.loc[overview.Value.notnull()]
