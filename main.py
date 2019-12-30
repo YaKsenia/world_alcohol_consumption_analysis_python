@@ -13,6 +13,21 @@ import seaborn as sns
 from draw_bootstrap_replications import draw_bs_reps
 from statistical_tests import hypothesis_test, ecdf, draw_perm_reps, diff_of_means
 from config import begin_year, end_year, filename
+import argparse
+
+# Define the parser
+parser = argparse.ArgumentParser(description='Define the start and end year')
+
+# Declare an argument (`--algo`), telling that the corresponding value should be stored in the `algo` field, and using a default value if the argument isn't given
+parser.add_argument('--begin_year', action="store", dest='data1', default=1960)
+parser.add_argument('--end_year', action="store", dest='data2', default=2016)
+
+# Now, parse the command line arguments and store the values in the `args` variable
+parse_years = parser.parse_args()
+
+begin_year = str(parse_years.data1)
+end_year = str(parse_years.data2)
+
 #read the file
 
 df = pd.read_csv(filename)
