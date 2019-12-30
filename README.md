@@ -34,9 +34,11 @@ Now, you can choose any pair/pairs of years between which you see a significant 
 - Open **config.py** file and replace the starting and ending year which you see there with the ones you are interested in.
 
 - Run the script **main.py** with the following command:
+
+**Important! You need to specify in this command the two years which you want to compare. Replace 2015 and 2016 with the years you want to analyze: **
   
-  python3.6 main.py
-  
+  python3.6 main.py --begin_year 2015 --end_year 2016
+
   
 **What happens when you run main.py?**
 
