@@ -29,11 +29,7 @@ python3 overview.py
 ![alt text](https://github.com/YaKsenia/world_alcohol_consumption_analysis_python/blob/master/visualizations/number_of_countries_per_year.png)
 
 
-Now, you can choose any pair/pairs of years between which you see a significant change on the graph, and compare them. For this you need to:
-
-- Open **config.py** file and replace the starting and ending year which you see there with the ones you are interested in.
-
-- Run the script **main.py** with the following command:
+Now, you can choose any pair/pairs of years between which you see a significant change on the graph, and compare them. For this you need to run the script **main.py** with the following command:
 
 **Important! You need to specify in this command the two years which you want to compare. Replace 2015 and 2016 with the years you want to analyze: **
   
@@ -68,7 +64,7 @@ Now, you can choose any pair/pairs of years between which you see a significant 
 ![alt text](https://github.com/YaKsenia/world_alcohol_consumption_analysis_python/blob/master/visualizations/all_swarmplots_2015-2016.png)
 
 
-6. It generates bootstrap replicates and permutation replicates based on the means of the data and conducts hypothesis tests with them (generating replicates helps to avoid getting results by chance and to make sure that the change is statistically significant).
+6. It generates bootstrap replicates and permutation replicates based on the means of the data and conducts hypothesis tests with them. Generating replicates helps to avoid getting results by chance, to generalize data, and to make sure that the change is statistically significant.
 
 - The hypothesis is: World alcohol consumption in the second year raised/dropped significatly comparing to the first
 - Null hypothesis: There was no significant change in world alcohol consumption
