@@ -10,15 +10,15 @@ Before running the project, you have to install the necessary software typing th
 
 **python3.6 -m pip install -r requirements.txt --upgrade**
 
-At the beginning I recommend you to run the script with the overview of the data - **overview.py** (alternatively, you can open the confuguration file **config.py**, choose any two years which you would like to compare and run **main.py**.
+At the beginning it is better to run the script with the overview of the data - **overview.py** (alternatively, you can run **main.py** right away).
 
 You can do it with this command in your Terminal (you need to be at the directory of the project at this moment):
 
-python3.6 overview.py
+python3 overview.py
 
 **What happens when you run overview.py:**
 
-1. It shows the descriptive statistics of the data - mean, median, standard deviation etc.
+1. It shows the descriptive statistics of the data - mean, median, standard deviation, minimum and maximum values of alcohol consumption.
 
 2. It visualizes changes in general world alcohol consumption through years (calculating mean of alcohol consumption value for each year):
 
@@ -37,7 +37,7 @@ Now, you can choose any pair/pairs of years between which you see a significant 
 
 **Important! You need to specify in this command the two years which you want to compare. Replace 2015 and 2016 with the years you want to analyze: **
   
-  python3.6 main.py --begin_year 2015 --end_year 2016
+  python3 main.py --begin_year 2015 --end_year 2016
 
   
 **What happens when you run main.py?**
@@ -63,12 +63,12 @@ Now, you can choose any pair/pairs of years between which you see a significant 
 ![alt text](https://github.com/YaKsenia/world_alcohol_consumption_analysis_python/blob/master/visualizations/all_ecdfs_2015-2016.png)
 
 
-5. It creates swarmplots for each type of alcohol for two years in comparison and plots them on one figure:
+5. It creates swarmplots for each type of alcohol for two years in comparison and plots them on one figure. Each dot represents one country. They help us to see the most common amounts of alcohol consumption:
 
 ![alt text](https://github.com/YaKsenia/world_alcohol_consumption_analysis_python/blob/master/visualizations/all_swarmplots_2015-2016.png)
 
 
-6. It generates bootstrap replicates and permutation replicates based on the means of the data and conducts hypothesis tests with them.
+6. It generates bootstrap replicates and permutation replicates based on the means of the data and conducts hypothesis tests with them (generating replicates helps to avoid getting results by chance and to make sure that the change is statistically significant).
 
 - The hypothesis is: World alcohol consumption in the second year raised/dropped significatly comparing to the first
 - Null hypothesis: There was no significant change in world alcohol consumption
