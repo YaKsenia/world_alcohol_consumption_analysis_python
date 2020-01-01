@@ -113,6 +113,6 @@ python3 analyze_one_country.py --country 'Russian Federation'
 
 4. At the end it plots ECDF of the general alcohol consumption in the country:
 
-https://github.com/YaKsenia/world_alcohol_consumption_analysis_python/blob/master/visualizations/one_country/ecdf_Russian_Federation.png
+![alt text](https://github.com/YaKsenia/world_alcohol_consumption_analysis_python/blob/master/visualizations/one_country/ecdf_Russian_Federation.png)
 
 To be continued... ;)
