@@ -1,6 +1,6 @@
 # World alcohol consumption analysis with Python
 
-The project in Python for analyzing World bank data about alcohol consumption in different countries in 1980-2016. 
+The project in Python for analyzing World bank data about alcohol consumption in different countries in 1960-2016. 
 
 Firstly, the project gives you an overview of the data in general (changes through all years). 
 
