@@ -36,6 +36,8 @@ df = pd.read_csv(filename)
 
 df = df[['Country', 'Beverage Types', begin_year, end_year]]
 
+df['Beverage Types'] = df['Beverage Types'].replace({'Other alcoholic beverages': 'Other'})
+
 #create a copy of the original dataframe
 compare_years = df.copy()
 
@@ -104,7 +106,7 @@ plt.tight_layout()
 
 #to show the plot or save it as a png-file, uncomment one of the next lines:
 
-#plt.savefig('countries_leaders_begin_year-_end_year.png' , dpi=300)
+plt.savefig('visualizations/countries_leaders_begin_year-_end_year.png' , dpi=300)
 plt.show()
 plt.close()
 
@@ -122,7 +124,7 @@ plt.tight_layout()
 
 #to show the plot or save it as a ong-file,, uncomment one of the next lines:
 
-#plt.savefig('types_alcohol_compare_begin_year-_end_year.png' , dpi=200)
+plt.savefig('visualizations/types_alcohol_compare_' + begin_year + '-' + end_year + '.png' , dpi=200)
 plt.show()
 plt.close()
 
@@ -280,8 +282,8 @@ for i, alco_type in enumerate(types):
 
 # save the figures with plots or just show them (uncomment your preference)
 
-#fig1.savefig('ecdfs_begin_year-_end_year.png' , dpi=200)
-#fig2.savefig('swarmplots_begin_year-_end_year.png' , dpi=200)
+#fig1.savefig('visualizations/ecdfs_begin_year-_end_year.png' , dpi=200)
+#fig2.savefig('visualizations/swarmplots_begin_year-_end_year.png' , dpi=200)
 
 plt.show()
 
