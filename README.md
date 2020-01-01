@@ -22,7 +22,7 @@ python3 overview.py
 
 2. It visualizes changes in general world alcohol consumption through years (calculating mean of alcohol consumption value for each year):
 
-![alt text](https://github.com/YaKsenia/world_alcohol_consumption_analysis_python/blob/master/visualizations/overview_alcohol_consumption_all_years.png)
+![alt text](https://github.com/YaKsenia/world_alcohol_consumption_analysis_python/blob/master/visualizations/all_years_overview_alcohol_consumption.png)
 
 3. The amount of data for each year is not equal and, even though we calculate mean values for every year, it can make the results biased. That's why this script also visualizes the number of countries presented in the data for each year (so we can see how many missing data are there in some years, sometimes it can be twice less than in others):
 
