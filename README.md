@@ -20,7 +20,7 @@ python3 overview.py
 
 1. It shows the descriptive statistics of the data - mean, median, standard deviation, minimum and maximum values of alcohol consumption.
 
-2. It visualizes changes in general world alcohol consumption through years (calculating mean of alcohol consumption value for each year):
+2. It visualizes changes in general world alcohol consumption through years (calculating mean of alcohol consumption value of all countries for each year):
 
 ![alt text](https://github.com/YaKsenia/world_alcohol_consumption_analysis_python/blob/master/visualizations/all_years_overview_alcohol_consumption.png)
 
