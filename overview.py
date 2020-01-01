@@ -5,7 +5,7 @@ import seaborn as sns
 
 df = pd.read_csv('data_world_alcohol_consumption.csv')
 #pd.set_option('display.max_rows', df.shape[0]+1)
-print('Number of rows and columns of the original data:', df.shape)
+print('Number of rows and columns of the original data:', df.shape, '\n')
 
 #Exploratory data analysis
 
@@ -17,16 +17,29 @@ overview = overview.melt(id_vars=['Unnamed: 0', 'Country', 'Data Source_x', 'Bev
                          var_name="Year",
                          value_name="Value")
 
-#delete the rows with null values
-overview = overview.loc[overview.Value.notnull()]
-
-#remove rows where alcohol consumption value is 0
-overview = overview[overview['Value'] != 0.0]
 
 #keep the rows with data for all types of alcohol
 overview = overview[overview['Beverage Types'] == 'All types']
 
-print('Number of rows and columns of the data after processing:', overview.shape, '\n')
+with_null = len(overview)
+
+print('Number of rows and columns of the data after merging all columns with years into one:', overview.shape, '\n')
+
+#delete the rows with null values
+overview = overview.loc[overview.Value.notnull()]
+
+without_null = len(overview)
+
+print('Number of rows with null values which are deleted: ', with_null - without_null, '\n')
+
+zeros =  overview[overview['Value'] == 0.0]
+
+#remove rows where alcohol consumption value is 0
+overview = overview[overview['Value'] != 0.0]
+
+print('Number of rows with zero alcohol consumption in the processed dataset: ', len(zeros), '\n')
+print('Percentage of rows with zero alcohol consumption: ', len(zeros) / len(overview) * 100, '%', '\n')
+print('Number of rows and columns of the data after removing null and zeros:', overview.shape, '\n')
 print('Statistics of the "Value" column: ', '\n', overview.Value.describe(), '\n')
 
 #convert year column to integer datatype
