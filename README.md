@@ -49,12 +49,12 @@ Now, you can choose any pair/pairs of years between which you see a significant 
 ![alt text](https://github.com/YaKsenia/world_alcohol_consumption_analysis_python/blob/master/visualizations/countries_leaders_2015-2016.png)
 
 
-3. It visualizes data per each type of alcohol in comparison between the years of observation:
+3. It visualizes data per each type of alcohol in comparison between the years of observation (the alcohol value for each type is the sum of the values of all countries):
 
 ![alt text](https://github.com/YaKsenia/world_alcohol_consumption_analysis_python/blob/master/visualizations/types_alcohol_compare_2015-2016.png)
 
 
-4. It created ECDFs (Empirical cumulative distribution function) for each type of alcohol for two years in comparison and plots them on one figure:
+4. It created ECDFs (Empirical cumulative distribution function) for each type of alcohol for two years in comparison and plots them on one figure (each ECDF graph plots the alcohol value feature of the data in order from least to greatest and shows the whole feature as if is distributed across the data set):
 
 ![alt text](https://github.com/YaKsenia/world_alcohol_consumption_analysis_python/blob/master/visualizations/all_ecdfs_2015-2016.png)
 
