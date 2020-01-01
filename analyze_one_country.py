@@ -27,9 +27,18 @@ df = df.melt(id_vars=['Unnamed: 0', 'Country', 'Data Source_x', 'Beverage Types'
              var_name="Year",
              value_name="Value")
 
+#Find thw place of the observed country in the world alcohol consumption ranking
+
+ranking = df.copy()
+ranking = ranking[ranking['Beverage Types'] == 'All types']
+ranking = ranking.groupby('Country').mean().sort_values(by='Value', ascending=False).reset_index()
+country_of_research = ranking[ranking['Country'] == country]
+print('Place of', country, 'in world alcohol consumption ranking: ', country_of_research.index.tolist())
+
+
 df = df[df['Country'] == country]
 
-print("Statistics of the alcohol consumption value data: ", '\n', df.Value.describe())
+print("Statistics of the alcohol consumption value data of", country, ': ' '\n', df.Value.describe())
 
 #convert year column to integer datatype
 
@@ -72,7 +81,7 @@ plt.close()
 types_df = df.copy()
 #types_df = types_df[types_df['Beverage Types'] != 'All types']
 
-_ = plt.title('Comparison of alcohol consumption of different drinks in ' + country)
+_ = plt.title('Comparison of consumption of different drinks in ' + country)
 
 beer  = types_df[types_df['Beverage Types'] == 'Beer']
 wine = types_df[types_df['Beverage Types'] == 'Wine']
@@ -113,5 +122,6 @@ _ = plt.title('ECDF of alcohol consumption in 1960-2016 in ' + country)
 _ = plt.xlabel('Alcohol consumption value')
 _ = plt.ylabel('ECDF')
 
+plt.savefig('visualizations/one_country/ecdf_' + country_processed + '.png' , dpi=200)
 plt.show()
 plt.close()
