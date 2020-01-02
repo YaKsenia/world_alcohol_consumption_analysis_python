@@ -10,7 +10,7 @@ Thirdly, the project generates statistical information and visualization for any
 
 Before running the project, you have to install the necessary software typing this command in your Terminal/command line:
 
-**python3.6 -m pip install -r requirements.txt --upgrade**
+**python3 -m pip install -r requirements.txt --upgrade**
 
 At the beginning it is better to run the script with the overview of the data - **overview.py** (alternatively, you can run **main.py** right away).
 
