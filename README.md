@@ -4,7 +4,7 @@ The project in Python for analyzing World bank data about alcohol consumption in
 
 Firstly, the project gives an overview of the data in general (changes through all years). 
 
-Secondly, you can choose any two years in range 1960-2016, which you would like to compare with each other, see visualization of alcohol consumption in these periods in comparison next to each other and get the results of hypothesis statistical tests which define if these was a significant change in alcohol consumption between these two years or not.
+Secondly, you can choose any two years in range 1960-2016, which you would like to compare with each other, see visualization of alcohol consumption in these periods in comparison next to each other and get the results of hypothesis statistical tests which define if there was a significant change in alcohol consumption between these two years or not.
 
 Thirdly, the project generates statistical information and visualization for any country of a user's choice.
 
